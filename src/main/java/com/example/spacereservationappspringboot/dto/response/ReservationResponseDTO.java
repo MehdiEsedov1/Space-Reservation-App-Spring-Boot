@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 @Builder
 public class ReservationResponseDTO {
-    private int id;
+    private Long id;
     private String name;
     private String workspaceName;
     private Date startTime;

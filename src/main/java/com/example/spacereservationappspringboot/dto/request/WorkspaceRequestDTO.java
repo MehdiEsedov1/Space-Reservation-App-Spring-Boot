@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 
 @Data
 public class WorkspaceRequestDTO {
-
     @NotBlank(message = "Workspace name is required.")
     private String name;
 

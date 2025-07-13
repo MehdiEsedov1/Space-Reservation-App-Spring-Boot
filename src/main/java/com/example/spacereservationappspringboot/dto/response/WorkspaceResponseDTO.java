@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class WorkspaceResponseDTO {
-    private int id;
+    private Long id;
     private String name;
     private WorkspaceType type;
     private BigDecimal price;

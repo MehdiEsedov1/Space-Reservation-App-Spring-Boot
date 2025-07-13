@@ -10,12 +10,11 @@ import java.util.Date;
 
 @Data
 public class ReservationRequestDTO {
-
     @NotBlank(message = "Name is required.")
     private String name;
 
     @Min(value = 1, message = "Workspace ID must be greater than 0.")
-    private int workspaceId;
+    private Long workspaceId;
 
     @NotNull(message = "Start time is required.")
     @Future(message = "Start time must be in the future.")
