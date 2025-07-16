@@ -5,8 +5,8 @@ import com.example.spacereservationappspringboot.dto.response.WorkspaceResponseD
 import com.example.spacereservationappspringboot.entity.Interval;
 import com.example.spacereservationappspringboot.entity.Reservation;
 import com.example.spacereservationappspringboot.entity.Workspace;
-import com.example.spacereservationappspringboot.exception.NotFoundException;
-import com.example.spacereservationappspringboot.exception.WorkspaceSaveFailed;
+import com.example.spacereservationappspringboot.exception.model.NotFoundException;
+import com.example.spacereservationappspringboot.exception.type.ExceptionType;
 import com.example.spacereservationappspringboot.mapper.WorkspaceMapper;
 import com.example.spacereservationappspringboot.repository.ReservationRepository;
 import com.example.spacereservationappspringboot.repository.WorkspaceRepository;
@@ -18,14 +18,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WorkspaceService {
-
     private final WorkspaceRepository workspaceRepository;
     private final ReservationRepository reservationRepository;
     private final WorkspaceMapper workspaceMapper;
 
-    public Workspace getWorkspaceById(int id) throws NotFoundException {
-        return workspaceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Workspace not found!"));
+    public Workspace getWorkspaceById(Long id) {
+        return workspaceRepository.findById(id).orElseThrow();
     }
 
     public List<WorkspaceResponseDTO> getAllWorkspaces() {
@@ -41,32 +39,31 @@ public class WorkspaceService {
                 .toList();
     }
 
-    public WorkspaceResponseDTO createWorkspace(WorkspaceRequestDTO dto) {
+    public void createWorkspace(WorkspaceRequestDTO dto) {
         Workspace workspace = workspaceMapper.toEntity(dto);
         Workspace saved = workspaceRepository.save(workspace);
-        return workspaceMapper.toDTO(saved);
+        workspaceMapper.toDTO(saved);
     }
 
-    public WorkspaceResponseDTO editWorkspace(int id, WorkspaceRequestDTO dto) throws WorkspaceSaveFailed {
+    public void editWorkspace(Long id, WorkspaceRequestDTO dto){
         if (!workspaceRepository.existsById(id)) {
-            throw new WorkspaceSaveFailed("Couldn't save workspace: not found.");
+            throw new NotFoundException(ExceptionType.WORKSPACE_NOT_FOUND);
         }
 
         Workspace workspace = workspaceMapper.toEntity(dto);
         workspace.setId(id);
         Workspace saved = workspaceRepository.save(workspace);
-        return workspaceMapper.toDTO(saved);
+        workspaceMapper.toDTO(saved);
     }
 
-    public boolean deleteWorkspace(int id) {
+    public void deleteWorkspace(Long id) {
         if (!workspaceRepository.existsById(id)) {
-            return false;
+            return;
         }
         workspaceRepository.deleteById(id);
-        return true;
     }
 
-    public boolean isAvailable(int workspaceId, Interval interval) {
+    public boolean isAvailable(Long workspaceId, Interval interval) {
         List<Reservation> reservations = reservationRepository.findAllByWorkspaceId(workspaceId);
         return reservations.stream()
                 .noneMatch(existing -> Interval.isOverlap(interval, existing.getInterval()));

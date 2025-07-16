@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    List<Reservation> findAllByWorkspaceId(int workspaceId);
+    List<Reservation> findAllByWorkspaceId(Long workspaceId);
 }

@@ -4,19 +4,18 @@ import com.example.spacereservationappspringboot.dto.response.ReservationRespons
 import com.example.spacereservationappspringboot.entity.Interval;
 import com.example.spacereservationappspringboot.entity.Reservation;
 import com.example.spacereservationappspringboot.entity.Workspace;
-import com.example.spacereservationappspringboot.exception.NotFoundException;
+import com.example.spacereservationappspringboot.exception.model.NotFoundException;
+import com.example.spacereservationappspringboot.exception.type.ExceptionType;
 import com.example.spacereservationappspringboot.mapper.ReservationMapper;
 import com.example.spacereservationappspringboot.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
-
     private final ReservationRepository reservationRepository;
     private final WorkspaceService workspaceService;
     private final ReservationMapper reservationMapper;
@@ -27,35 +26,31 @@ public class ReservationService {
                 .toList();
     }
 
-    public Optional<ReservationResponseDTO> makeReservation(String name, int workspaceId, Interval interval) {
-        Optional<Workspace> workspaceOpt = tryGetWorkspace(workspaceId);
-        if (workspaceOpt.isEmpty()) return Optional.empty();
-
-        Workspace workspace = workspaceOpt.get();
+    public void makeReservation(String name, Long workspaceId, Interval interval) {
+        Workspace workspace = tryGetWorkspace(workspaceId);
 
         if (!workspaceService.isAvailable(workspaceId, interval)) {
-            return Optional.empty();
+            return;
         }
 
         Reservation reservation = new Reservation(name, workspace, interval);
         Reservation saved = reservationRepository.save(reservation);
 
-        return Optional.of(reservationMapper.toDTO(saved));
+        reservationMapper.toDTO(saved);
     }
 
-    public boolean cancelReservation(long id) {
+    public void cancelReservation(Long id) {
         if (!reservationRepository.existsById(id)) {
-            return false;
+            return;
         }
         reservationRepository.deleteById(id);
-        return true;
     }
 
-    private Optional<Workspace> tryGetWorkspace(int workspaceId) {
-        try {
-            return Optional.of(workspaceService.getWorkspaceById(workspaceId));
-        } catch (NotFoundException e) {
-            return Optional.empty();
+    private Workspace tryGetWorkspace(Long workspaceId) {
+        Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
+        if(workspace == null){
+            throw new NotFoundException(ExceptionType.RESERVATION_NOT_FOUND);
         }
+        return workspace;
     }
 }
