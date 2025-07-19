@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <include file="liquibase/1.0/2025100100-create-workspace-table.xml"/>
+    <include file="liquibase/1.0/2025100101-create-reservation-table.xml"/>
+    <include file="liquibase/1.0/2025100102-create-user-table.xml"/>
+    <include file="liquibase/1.0/2025100103-create-role-table.xml"/>
+    <include file="liquibase/1.0/2025100104-create-interval-table.xml"/>
+    <include file="liquibase/1.0/2025100105-create-user-roles-table.xml"/>
+
+</databaseChangeLog>
