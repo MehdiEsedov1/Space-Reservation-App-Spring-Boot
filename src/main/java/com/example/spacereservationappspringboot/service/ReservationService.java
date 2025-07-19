@@ -6,6 +6,7 @@ import com.example.spacereservationappspringboot.entity.Reservation;
 import com.example.spacereservationappspringboot.entity.Workspace;
 import com.example.spacereservationappspringboot.exception.model.NotFoundException;
 import com.example.spacereservationappspringboot.exception.type.ExceptionType;
+import com.example.spacereservationappspringboot.factory.ReservationFactory;
 import com.example.spacereservationappspringboot.mapper.ReservationMapper;
 import com.example.spacereservationappspringboot.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final WorkspaceService workspaceService;
     private final ReservationMapper reservationMapper;
+    private final ReservationFactory reservationFactory;
 
     public List<ReservationResponseDTO> getAllReservations() {
         return reservationRepository.findAll().stream()
@@ -33,7 +35,7 @@ public class ReservationService {
             return;
         }
 
-        Reservation reservation = new Reservation(name, workspace, interval);
+        Reservation reservation = reservationFactory.createReservation(name, workspace, interval);
         Reservation saved = reservationRepository.save(reservation);
 
         reservationMapper.toDTO(saved);
@@ -48,7 +50,7 @@ public class ReservationService {
 
     private Workspace tryGetWorkspace(Long workspaceId) {
         Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
-        if(workspace == null){
+        if (workspace == null) {
             throw new NotFoundException(ExceptionType.RESERVATION_NOT_FOUND);
         }
         return workspace;
