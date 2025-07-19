@@ -7,6 +7,7 @@ import com.example.spacereservationappspringboot.entity.Reservation;
 import com.example.spacereservationappspringboot.entity.Workspace;
 import com.example.spacereservationappspringboot.exception.model.NotFoundException;
 import com.example.spacereservationappspringboot.exception.type.ExceptionType;
+import com.example.spacereservationappspringboot.factory.WorkspaceFactory;
 import com.example.spacereservationappspringboot.mapper.WorkspaceMapper;
 import com.example.spacereservationappspringboot.repository.ReservationRepository;
 import com.example.spacereservationappspringboot.repository.WorkspaceRepository;
@@ -21,6 +22,7 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final ReservationRepository reservationRepository;
     private final WorkspaceMapper workspaceMapper;
+    private final WorkspaceFactory workspaceFactory;
 
     public Workspace getWorkspaceById(Long id) {
         return workspaceRepository.findById(id).orElseThrow();
@@ -40,17 +42,17 @@ public class WorkspaceService {
     }
 
     public void createWorkspace(WorkspaceRequestDTO dto) {
-        Workspace workspace = workspaceMapper.toEntity(dto);
+        Workspace workspace = workspaceFactory.createWorkspace(dto);
         Workspace saved = workspaceRepository.save(workspace);
         workspaceMapper.toDTO(saved);
     }
 
-    public void editWorkspace(Long id, WorkspaceRequestDTO dto){
+    public void editWorkspace(Long id, WorkspaceRequestDTO dto) {
         if (!workspaceRepository.existsById(id)) {
             throw new NotFoundException(ExceptionType.WORKSPACE_NOT_FOUND);
         }
 
-        Workspace workspace = workspaceMapper.toEntity(dto);
+        Workspace workspace = workspaceFactory.createWorkspace(dto);
         workspace.setId(id);
         Workspace saved = workspaceRepository.save(workspace);
         workspaceMapper.toDTO(saved);
