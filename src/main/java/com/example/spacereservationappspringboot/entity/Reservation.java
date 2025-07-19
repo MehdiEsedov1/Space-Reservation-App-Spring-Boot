@@ -13,11 +13,10 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "workspace_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
     @Embedded

@@ -8,27 +8,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Embeddable
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Interval implements Serializable {
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     public static boolean isOverlap(Interval a, Interval b) {
-        return !(a.endTime.before(b.startTime) || b.endTime.before(a.startTime));
+        return !(a.endTime.isBefore(b.startTime) || b.endTime.isBefore(a.startTime));
     }
 
-    public static Interval of(Date start, Date end) {
-        if (start == null || end == null) {
-            throw new InvalidTimeIntervalException(ExceptionType.BAD_REQUEST);
-        }
-        if (start.after(end)) {
+    public static Interval of(LocalDateTime start, LocalDateTime end) {
+        if (start == null || end == null || start.isAfter(end)) {
             throw new InvalidTimeIntervalException(ExceptionType.BAD_REQUEST);
         }
         return new Interval(start, end);
     }
 }
+

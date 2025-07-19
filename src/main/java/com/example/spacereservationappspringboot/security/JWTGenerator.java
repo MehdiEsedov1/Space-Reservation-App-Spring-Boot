@@ -19,16 +19,14 @@ public class JWTGenerator {
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
         Date currentDate = new Date();
-        Date expireDate = new Date(currentDate.getTime() + 70000);
+        Date expireDate = new Date(currentDate.getTime() + 1000L * 60 * 60 * 24);
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(key)
                 .compact();
-
-        return token;
     }
 
     public String getUserNameFromJWT(String token) {

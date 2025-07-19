@@ -2,6 +2,8 @@ package com.example.spacereservationappspringboot.security;
 
 import com.example.spacereservationappspringboot.entity.Role;
 import com.example.spacereservationappspringboot.entity.UserEntity;
+import com.example.spacereservationappspringboot.exception.model.NotFoundException;
+import com.example.spacereservationappspringboot.exception.type.ExceptionType;
 import com.example.spacereservationappspringboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,8 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String username) {
+        UserEntity user = userRepo.findByUsername(username).orElseThrow(() -> new NotFoundException(ExceptionType.USER_NOT_FOUND));
 
         if (!user.getIsEnable()) {
             throw new UsernameNotFoundException("User account is not activated");

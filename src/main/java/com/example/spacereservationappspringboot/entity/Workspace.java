@@ -16,14 +16,11 @@ public class Workspace {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private WorkspaceType type;
 
-    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
     public Workspace(String name, WorkspaceType type, BigDecimal price) {
