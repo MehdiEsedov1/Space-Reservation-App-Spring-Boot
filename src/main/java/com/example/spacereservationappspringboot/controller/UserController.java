@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,8 +42,8 @@ public class UserController {
 
     @GetMapping("/available")
     public List<WorkspaceResponseDTO> findAvailableWorkspaces(
-            @RequestParam("start") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date start,
-            @RequestParam("end") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date end) throws InvalidTimeIntervalException {
+            @RequestParam("start") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime start,
+            @RequestParam("end") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime end) throws InvalidTimeIntervalException {
         Interval interval = Interval.of(start, end);
         return workspaceService.getAvailableWorkspaces(interval);
     }
